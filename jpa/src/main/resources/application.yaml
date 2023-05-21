@@ -1,0 +1,36 @@
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  application:
+    name: vehicle-lifecycle-mgmt
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRESQL_URL:jdbc:postgresql://localhost:5432/mgmt?characterEncoding=utf8&useSSL=false}
+    username: ${POSTGRESQL_USERNAME:mgmt}
+    password: ${POSTGRESQL_PASSWORD:mgmt}
+    minimum-idle: ${DATASOURCE_MINI_IDLE:1}
+    maximum-pool-size: ${DATASOURCE_MAX_POOL_SIZE:5}
+    idle-timeout: ${DATASOURCE_IDLE_TIMEOUT:10000}
+    connection-timeout: ${DATASOURCE_CONNECTION_TIMEOUT:20000}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        type:
+          json_format_mapper: io.jutil.spring.demo.jpa.config.FastJsonFormatMapper
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: true
+    locations: classpath:sql
+    baseline-on-migrate: true
+    check-location: true
+    clean-disabled: false
+    clean-on-validation-error: true
+    clean-ignore-failed-future-migration: true
+
+app:
+  clean-database: ${CLEAN_DATABASE:true}
