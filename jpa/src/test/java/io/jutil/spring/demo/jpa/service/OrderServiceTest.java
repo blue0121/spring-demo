@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @author Jin Zheng
  * @since 2023-05-21
  */
+//@ActiveProfiles("pg")
 @SpringBootTest(classes = Application.class)
 class OrderServiceTest {
 	@Autowired

@@ -1,10 +1,7 @@
 package io.jutil.spring.demo.jpa.entity;
 
 import io.jutil.spring.demo.jpa.util.DateUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "od_order")
-public class OrderEntity extends BaseEntity {
+public class OrderEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_seq")
+	@SequenceGenerator(name = "id_seq", sequenceName = "od_order_id_seq", allocationSize = 1)
+	@Column(name = "id", columnDefinition = "int4", nullable = false)
+	private Integer id;
+
 	@Column(name = "user_id", columnDefinition = "int4", nullable = false)
 	private Integer userId;
 

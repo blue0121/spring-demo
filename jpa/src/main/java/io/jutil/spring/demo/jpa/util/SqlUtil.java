@@ -1,5 +1,6 @@
 package io.jutil.spring.demo.jpa.util;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +19,24 @@ public class SqlUtil implements InitializingBean {
     @Autowired
     DataSourceProperties dataSourceProperties;
 
-    private String jsonType;
+    private static String dbType;
+    private static String jsonType;
 
-    public String getJsonType() {
+    public static String getJsonType() {
         return jsonType;
     }
 
+    public static String getJsonString(String str) {
+        return switch (dbType) {
+            case "h2" -> JSON.parseObject(str, String.class);
+            default -> str;
+        };
+    }
 
     @Override
     public void afterPropertiesSet() {
-        var dbType = this.deleteDbType();
-        this.detectJsonType(dbType);
+        dbType = this.deleteDbType();
+        this.detectJsonType();
     }
 
     private String deleteDbType() {
@@ -40,7 +48,7 @@ public class SqlUtil implements InitializingBean {
         return type;
     }
 
-    private void detectJsonType(String dbType) {
+    private void detectJsonType() {
         this.jsonType = switch (dbType) {
             case "postgresql" -> "jsonb";
             default -> "json";
