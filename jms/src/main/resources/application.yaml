@@ -8,9 +8,9 @@ jms:
   listeners:
     - id: vehicleListener
       type: TOPIC
-      topic: response/vehicle
+      topic: command/vehicle
       bean-name: vehicleListener
     - id: deviceListener
       type: TOPIC
-      topic: response/vehicle
+      topic: command/device
       bean-name: deviceListener

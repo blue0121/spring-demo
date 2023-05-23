@@ -66,24 +66,29 @@ public class JmsConnection implements ExceptionListener, InitializingBean,
 
 		var interval = prop.getConnection().getReconnectInterval();
 		log.error("JMS connection error, ", e);
-		WaitUtil.sleep(interval);
-		try {
-			if (connection != null) {
-				connection.close();
+		jmsConsumer.unsubscribe();
+		while (true) {
+			WaitUtil.sleep(interval);
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+				connection = connectionFactory.createConnection();
+				this.connection.setExceptionListener(this);
+				connection.start();
+				log.info("JMS reconnected successfully");
+				jmsConsumer.subscribe();
+				break;
+			} catch (JMSException ex) {
+				log.error("JMS reconnect failed,", e);
 			}
-			connection = connectionFactory.createConnection();
-			this.connection.setExceptionListener(this);
-			connection.start();
-			log.info("JMS reconnected successfully");
-		} catch (JMSException ex) {
-			log.error("JMS reconnect failed,", e);
 		}
 	}
 
 	@Override
 	public void destroy() throws Exception {
 		closed = true;
-		//amqpConsumer.unsubscribe();
+		jmsConsumer.unsubscribe();
 		try {
 			if (this.connection != null) {
 				this.connection.close();

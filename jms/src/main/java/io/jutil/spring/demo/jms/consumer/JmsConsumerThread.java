@@ -56,8 +56,6 @@ public class JmsConsumerThread implements Runnable, Closeable {
 			if (message == null) {
 				continue;
 			}
-			log.info("JMS consume, topic: {}, message type: {}", topic,
-					message.getClass().getSimpleName());
 			if (!(message instanceof TextMessage)) {
 				log.warn("Unsupported not text message");
 				message.acknowledge();
@@ -83,6 +81,6 @@ public class JmsConsumerThread implements Runnable, Closeable {
 		this.closed = true;
 		JmsUtil.close(consumer);
 		JmsUtil.close(session);
-		log.info("JMS consumer wakeup, topic: {}", topic);
+		log.debug("JMS consumer wakeup, topic: {}", topic);
 	}
 }

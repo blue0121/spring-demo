@@ -36,7 +36,7 @@ public class JmsProducer {
 
 	public void send(JmsTopic topic, List<String> messageList) {
 		if (connection == null) {
-			log.warn("AMQP is disabled");
+			log.warn("JMS is disabled");
 			return;
 		}
 
@@ -53,9 +53,9 @@ public class JmsProducer {
 				var message = session.createTextMessage(object);
 				producer.send(message);
 				if (log.isDebugEnabled()) {
-					log.debug("AMQP produce, topic: {}, message: {}", topic, object);
+					log.debug("JMS produce, topic: {}, message: {}", topic, object);
 				} else {
-					log.info("AMQP produce, topic: {}", topic);
+					log.info("JMS produce, topic: {}", topic);
 				}
 			}
 		}
