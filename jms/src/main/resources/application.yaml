@@ -1,0 +1,16 @@
+
+jms:
+  enabled: true
+  connection:
+    server: amqp://localhost:5672
+    vhost: /test
+    reconnect-interval: 10000
+  listeners:
+    - id: vehicleListener
+      type: TOPIC
+      topic: response/vehicle
+      bean-name: vehicleListener
+    - id: deviceListener
+      type: TOPIC
+      topic: response/vehicle
+      bean-name: deviceListener

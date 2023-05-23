@@ -3,7 +3,7 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 30s
   application:
-    name: vehicle-lifecycle-mgmt
+    name: jpa
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${POSTGRESQL_URL:jdbc:postgresql://localhost:5432/mgmt?characterEncoding=utf8&useSSL=false}
