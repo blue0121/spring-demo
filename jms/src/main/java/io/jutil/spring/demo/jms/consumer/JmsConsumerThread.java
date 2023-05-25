@@ -53,6 +53,7 @@ public class JmsConsumerThread implements Runnable, Closeable {
 	private void messageConsume(MessageConsumer consumer) throws JMSException {
 		while (!closed) {
 			var message = consumer.receive(TIMEOUT);
+			log.debug("Fetch message, topic: {}", topic);
 			if (message == null) {
 				continue;
 			}
@@ -65,6 +66,9 @@ public class JmsConsumerThread implements Runnable, Closeable {
 			log.debug("JMS consume, message: {}", text);
 			try {
 				listener.onMessage(topic, text);
+				message.acknowledge();
+			} catch (IllegalArgumentException e) {
+				log.error("JMS consumer listener catch error,", e);
 				message.acknowledge();
 			} catch (Exception e) {
 				log.error("JMS consumer listener error,", e);

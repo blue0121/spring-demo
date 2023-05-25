@@ -24,20 +24,23 @@ public class MessageProducer implements InitializingBean, Runnable, DisposableBe
 		this.closed = false;
 		var thread = new Thread(this);
 		thread.start();
-		log.info(">>>> MessageProducer thread start");
 	}
 
 	@Override
 	public void run() {
-		while (!closed) {
+		log.info(">>>> MessageProducer thread start");
+		int count = 0;
+		while (!closed && count < 1) {
 			try {
-				producer.sendTopic("command/vehicle", "vehicle message");
-				producer.sendTopic("command/device", "device message");
+				producer.sendQueue("command/queue", "queue message " + count);
+				producer.sendTopic("command/topic", "topic message " + count);
 			} catch (Exception e) {
 				log.error("Error, ", e);
 			}
-			WaitUtil.sleep(10_000);
+			WaitUtil.sleep(1_000);
+			count++;
 		}
+		log.info(">>>> MessageProducer thread end");
 	}
 
 	@Override

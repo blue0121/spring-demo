@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class VehicleListener implements JmsMessageListener {
+public class QueueListener implements JmsMessageListener {
 
     @Override
     public void onMessage(JmsTopic topic, String message) {

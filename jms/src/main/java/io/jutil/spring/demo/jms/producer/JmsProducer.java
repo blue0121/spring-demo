@@ -7,7 +7,6 @@ import io.jutil.spring.demo.jms.exception.JmsProducerException;
 import io.jutil.spring.demo.jms.util.AssertUtil;
 import io.jutil.spring.demo.jms.util.JmsUtil;
 import jakarta.jms.DeliveryMode;
-import jakarta.jms.JMSException;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,7 @@ public class JmsProducer {
 				}
 			}
 		}
-		catch (JMSException e) {
+		catch (Exception e) {
 			throw new JmsProducerException(topic, e);
 		} finally {
 			JmsUtil.close(producer);

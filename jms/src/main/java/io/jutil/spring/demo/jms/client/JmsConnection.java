@@ -28,7 +28,7 @@ public class JmsConnection implements ExceptionListener, InitializingBean,
 
 	private final JmsProperties prop;
 	private JmsConnectionFactory connectionFactory;
-	private Connection connection;
+	private volatile Connection connection;
 
 	private JmsConsumer jmsConsumer;
 
@@ -46,16 +46,28 @@ public class JmsConnection implements ExceptionListener, InitializingBean,
 		log.info("JMS uri: {}", uri);
 
 		this.connectionFactory = new JmsConnectionFactory(uri);
-		try {
-			this.connection = connectionFactory.createConnection();
-			this.connection.setExceptionListener(this);
-			this.connection.start();
-		} catch (JMSException e) {
-			log.error("JMS connect failed,", e);
-		}
-
 		this.jmsConsumer = new JmsConsumer(this);
-		jmsConsumer.subscribe();
+		this.connect();
+	}
+
+	private void connect() {
+		var interval = prop.getConnection().getReconnectInterval();
+		while (true) {
+			try {
+				if (this.connection != null) {
+					this.connection.close();
+				}
+				this.connection = connectionFactory.createConnection();
+				this.connection.setExceptionListener(this);
+				connection.start();
+				log.info("JMS reconnected successfully");
+				jmsConsumer.subscribe();
+				break;
+			} catch (JMSException ex) {
+				log.error("JMS reconnect failed,", ex);
+				WaitUtil.sleep(interval);
+			}
+		}
 	}
 
 	@Override
@@ -64,25 +76,9 @@ public class JmsConnection implements ExceptionListener, InitializingBean,
 			return;
 		}
 
-		var interval = prop.getConnection().getReconnectInterval();
 		log.error("JMS connection error, ", e);
 		jmsConsumer.unsubscribe();
-		while (true) {
-			WaitUtil.sleep(interval);
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				connection = connectionFactory.createConnection();
-				this.connection.setExceptionListener(this);
-				connection.start();
-				log.info("JMS reconnected successfully");
-				jmsConsumer.subscribe();
-				break;
-			} catch (JMSException ex) {
-				log.error("JMS reconnect failed,", e);
-			}
-		}
+		this.connect();
 	}
 
 	@Override

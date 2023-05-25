@@ -6,11 +6,11 @@ jms:
     vhost: /test
     reconnect-interval: 10000
   listeners:
-    - id: vehicleListener
+    - id: queueListener
+      type: QUEUE
+      topic: command/queue
+      bean-name: queueListener
+    - id: topicListener
       type: TOPIC
-      topic: command/vehicle
-      bean-name: vehicleListener
-    - id: deviceListener
-      type: TOPIC
-      topic: command/device
-      bean-name: deviceListener
+      topic: command/topic
+      bean-name: topicListener
